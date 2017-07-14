@@ -28,7 +28,7 @@ class String
     def green; "\e[32m#{self}\e[0m" end
 end
 
-::Version = ["0", "2"]
+::Version = ["0", "3"]
 options = {}
 OptionParser.new do |opts|
     opts.banner = "Usage: quips [options] [Swift files]"
@@ -90,9 +90,10 @@ end
 
 app_name = File.basename(ARGV[0], ".swift")
 
-quip_regex = /^\s*@quip/
+quip_regex = /^\s*@quip(gh)?/
 quip_locus_regex = /@quip/
-valid_quip_regex = /^\s*@quip\s*([^:\s]+)\s*:\s*"(.+?)"\s*:\s*([0-9]+)(?:\s*:\s*([0-9]+))?/
+quip_url_regex = /^\s*@quip\s*([^:\s]+)\s*:\s*\"(.+?)\"\s*:\s*([0-9]+)(?:\s*:\s*([0-9]+))?/
+quip_gh_regex= /^\s*@quipgh\s*([^:\s]+)\s*:\s*(.+?\/.+?)\s*:\s*([0-9]+)(?:\s*:\s*([0-9]+))?/
 
 source = []
 packages = []
@@ -100,9 +101,13 @@ errors = []
 
 File.foreach(ARGV[0]).each_with_index do |line, index|
     if line =~ quip_regex
-        if line =~ valid_quip_regex
-            match = valid_quip_regex.match(line)
+        if line =~ quip_url_regex
+            match = quip_url_regex.match(line)
             packages << Package.new(match[1], match[2], match[3], match[4])
+            source << "import #{match[1]}"
+        elsif line =~ quip_gh_regex
+            match = quip_gh_regex.match(line)
+            packages << Package.new(match[1], "https://github.com/#{match[2]}", match[3], match[4])
             source << "import #{match[1]}"
         else
             locus = line =~ quip_locus_regex
@@ -164,5 +169,7 @@ main = File.open("#{subdirectory}/main.swift", "w") {
     end
 }
 
-system("if swift build -C #{directory}; then #{directory}/.build/debug/#{app_name}; fi")
-system("find #{directory} -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")
+if errors.count == 0 
+    system("if swift build -C #{directory}; then #{directory}/.build/debug/#{app_name}; fi")
+    system("find #{directory} -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")
+end
