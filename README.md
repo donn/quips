@@ -19,7 +19,7 @@ Swift Package Manger on either macOS or Linux, Ruby 2.0+.
 
 # Usage
 The syntax is generally:
-```
+```swift
     @quip ModuleName:"https://example.com/link-to-repository.git":MajorVersion:MinorVersion?
 ```
 
