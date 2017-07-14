@@ -25,9 +25,10 @@ end
 class String
     def bold; "\e[1m#{self}\e[22m" end
     def red;  "\e[31m#{self}\e[0m" end
+    def green; "\e[32m#{self}\e[0m" end
 end
 
-::Version = ["0", "1"]
+::Version = ["0", "2"]
 options = {}
 OptionParser.new do |opts|
     opts.banner = "Usage: quips [options] [Swift files]"
@@ -90,6 +91,7 @@ end
 app_name = File.basename(ARGV[0], ".swift")
 
 quip_regex = /^\s*@quip/
+quip_locus_regex = /@quip/
 valid_quip_regex = /^\s*@quip\s*([^:\s]+)\s*:\s*"(.+?)"\s*:\s*([0-9]+)(?:\s*:\s*([0-9]+))?/
 
 source = []
@@ -103,8 +105,16 @@ File.foreach(ARGV[0]).each_with_index do |line, index|
             packages << Package.new(match[1], match[2], match[3], match[4])
             source << "import #{match[1]}"
         else
+            locus = line =~ quip_locus_regex
             errors << "#{ARGV[0]}:#{index}: #{"error".red}".bold + ": invalid quip".bold
             errors << line
+            indent = ""
+            puts locus
+            for i in 0...locus
+                indent += " "
+            end
+            indent += "^"
+            errors << indent.bold.green
             source << "// failed quip //"
         end
     else
@@ -114,9 +124,8 @@ end
 
 if errors.count > 0
     for error in errors
-        puts error
+        STDERR.puts error
     end
-    exit
 end
 
 if packages.count == 0
@@ -155,5 +164,5 @@ main = File.open("#{subdirectory}/main.swift", "w") {
     end
 }
 
-system("cd #{directory}; if swift build; then ./.build/debug/#{app_name}; fi")
-system("cd #{directory}; find . -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")
+system("if swift build -C #{directory}; then #{directory}/.build/debug/#{app_name}; fi")
+system("find #{directory} -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")
