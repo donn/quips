@@ -28,7 +28,7 @@ class String
     def green; "\e[32m#{self}\e[0m" end
 end
 
-::Version = ["0", "3"]
+::Version = ["0", "4"]
 options = {}
 OptionParser.new do |opts|
     opts.banner = "Usage: quips [options] [Swift files]"
@@ -114,7 +114,6 @@ File.foreach(ARGV[0]).each_with_index do |line, index|
             errors << "#{ARGV[0]}:#{index}: #{"error".red}".bold + ": invalid quip".bold
             errors << line
             indent = ""
-            puts locus
             for i in 0...locus
                 indent += " "
             end
@@ -169,7 +168,6 @@ main = File.open("#{subdirectory}/main.swift", "w") {
     end
 }
 
-if errors.count == 0 
-    system("if swift build -C #{directory}; then #{directory}/.build/debug/#{app_name}; fi")
-    system("find #{directory} -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")
-end
+
+system("if swift build -C #{directory} && [ 0 -eq #{errors.count} ]; then #{directory}/.build/debug/#{app_name}; fi")
+system("find #{directory} -mindepth 1 -maxdepth 1 ! -name '*.build*' | xargs rm -rf")

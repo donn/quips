@@ -6,6 +6,11 @@ Why? Well, because Swift lacks a lot of basic functionality for scripting despit
 # Dependencies
 Swift Package Manger on either macOS or Linux, Ruby 2.0+.
 
+## Why wouldn't I just use Ruby then
+Good question.
+
+...Moving on.
+
 # Installation
 ```bash
     # macOS
