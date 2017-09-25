@@ -61,4 +61,4 @@ You can also use quips as a shebang:
 ```
 
 # License
-MIT. Check 'LICENSE'.
+The Unlicense. Check 'UNLICENSE'.
