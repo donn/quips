@@ -1,47 +1,39 @@
 # quips
-quips (stands for Quickly Unleashed Inline Packaging for Swift) is a script that allows you to inline Swift packages in single Swift files.
+quips (stands for nothing, I just like the word quip) is like a small shim around Swift Package Manager that allows you to import Swift packages in single Swift files.
 
-Why? Well, because Swift lacks a lot of basic functionality for scripting despite its positioning for scripting, and having to form an actual, proper folder structure for a script to process some text files or something can get very tiresome.
+I wrote this dumpster fire during my downtime as a Microsoft intern (not on company time though.) As it stands, four years later, there isn't a better way to run single Swift files, and I honestly prefer to study algorithms by writing them in Swift. So I decided to unarchive and re-use this.
 
 # Dependencies
 Swift Package Manger on either macOS or Linux, Ruby 2.0+.
 
 ## Why wouldn't I just use Ruby then
-Good question.
-
-...Moving on.
+I prefer Swift's syntax, personally. :)
 
 # Installation
 ```bash
-    # macOS
-    curl -s https://raw.githubusercontent.com/Skyus/quips/master/quips.rb > /usr/local/bin/quips
-    chmod 755 /usr/local/bin/quips
-
-    # Linux/Windows Subsystem for Linux
-    curl -s https://raw.githubusercontent.com/Skyus/quips/master/quips.rb > ~/bin/quips
+    mkdir -p ~/bin
+    curl -s https://raw.githubusercontent.com/donn/quips/master/quips.rb > ~/bin/quips
     chmod 755 ~/bin/quips
 ```
 
+Ensure ~/bin is in path. Or don't.
+
 # Usage
-The syntax is generally:
+The syntax is as follows:
 ```swift
-    @quip ModuleName:"https://example.com/link-to-repository.git":MajorVersion:MinorVersion?
+    @quip ModuleName:"https://example.com/link-to-repository.git":SemanticVersion
 ```
 
-In your Swift source file:
+As an example. in your Swift source file:
 
 ```swift
-    @quip PlayingCard:"https://github.com/apple/example-package-playingcard.git":3:0
-
-    // or if you don't really care about the minor version
-
-    @quip PlayingCard:"https://github.com/apple/example-package-playingcard.git":3
+    @quip PlayingCard:"https://github.com/apple/example-package-playingcard.git":3.0.0
 ```
 
 To make things even shorter, you can also use a GitHub-specific quip:
 
 ```swift
-    @quipgh PlayingCard:apple/example-package-playingcard:3
+    @quipgh PlayingCard:apple/example-package-playingcard:3.0.0
 ```
 
 To run a quips-based Swift file, you need to use the "quips" command to call the script:

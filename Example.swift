@@ -1,20 +1,13 @@
 #!/usr/bin/env quips
 import Foundation
 
-@quip Colors:"https://github.com/skyus/Colors":1
-@quipgh Defile:skyus/Defile:2
+@quipgh Defile:donn/Defile:5.0.0
 
-guard let file = Defile("README.md") else {
+guard let file = File("README.md") else {
     print("Could not open file README.md.")
     exit(0)
 }
 
 let lines = file.lines!
 
-for line in lines {
-    var lineMutable = line
-    if lineMutable.hasPrefix("#") {
-        lineMutable = line.blue.bold
-    }
-    print(lineMutable)
-}
+print(lines)
