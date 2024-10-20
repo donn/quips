@@ -1,3 +1,6 @@
+# Use [swift-sh](https://github.com/mxcl/swift-sh).
+
+---
 # quips
 quips (stands for nothing, I just like the word quip) is like a small shim around Swift Package Manager that allows you to import Swift packages in single Swift files.
 
